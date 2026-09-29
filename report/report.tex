@@ -25,10 +25,12 @@
 
 % Wider text block and tighter header/footer than the template defaults
 \geometry{
-  left=2cm, right=2cm, top=1.2cm, bottom=1.2cm,
+  left=2cm, right=2cm, top=0.6cm, bottom=1.2cm,
   includeheadfoot=true,
-  headheight=35pt, headsep=6pt, footskip=18pt
+  headheight=35pt, headsep=16pt, footskip=18pt
 }
+% fancyhdr fixed the header width before the geometry change; match the new text width
+\setlength{\headwidth}{\textwidth}
 
 % Figures produced by the analysis code
 \graphicspath{{../outputs/figures/}{graphics/}}
@@ -51,7 +53,7 @@
 % Set depth of numbering for counters
 \AtBeginDocument{\counterwithin{lstlisting}{section}}
 
-\setcounter{tocdepth}{1}
+\setcounter{tocdepth}{2}
 
 % Compact lists
 \setlist{itemsep=1pt,topsep=3pt}
@@ -61,11 +63,18 @@
 \newcommand{\usd}[1]{\$#1}
 
 \begin{document}
+\hypersetup{pageanchor=false}  % avoid duplicate page anchors before numbering restarts
 \coverpage%
 
+% Cover and table of contents are not numbered; page 1 is the executive summary
+\pagenumbering{gobble}
+\begin{spacing}{1.0}
 \tableofcontents
+\end{spacing}
 
 \clearpage
+\pagenumbering{arabic}
+\hypersetup{pageanchor=true}
 \input{chapters/sec01_summary}
 \input{chapters/sec02_problem}
 \input{chapters/sec03_data}
