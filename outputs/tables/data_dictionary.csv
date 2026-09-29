@@ -1,0 +1,30 @@
+feature,type,description,n_missing,n_unique
+shipping_mode,categorical,Shipping mode chosen at order (Standard/Second/First/Same Day),0,4
+market,categorical,Destination market (5 values),0,5
+order_region,categorical,Destination region (23 values),0,23
+customer_segment,categorical,Consumer / Corporate / Home Office,0,3
+payment_type,categorical,"Transaction type: DEBIT, TRANSFER, PAYMENT, CASH",0,4
+main_department,categorical,Department of the order's highest-value line,0,11
+order_country,"categorical, target-encoded",Destination country,0,164
+order_city,"categorical, target-encoded",Destination city,0,3585
+main_category,"categorical, target-encoded",Product category of the highest-value line,0,50
+scheduled_days,numeric,Promised shipping days (fixed by mode: 0/1/2/4),0,4
+n_lines,numeric,Number of order lines,0,5
+total_qty,numeric,Total units ordered,0,24
+order_value,"numeric, USD",Sum of line Sales (before discount),0,18647
+total_discount,"numeric, USD",Sum of line discounts,0,20182
+mean_discount_rate,numeric,Mean line discount rate,0,4513
+max_unit_price,"numeric, USD",Highest unit price in the order,0,75
+n_categories,numeric,Distinct product categories in the order,0,5
+order_profit,"numeric, USD",Sum of 'Benefit per order' over lines,0,52398
+profit_margin,numeric,order_profit / order_value,0,58088
+weekday,numeric,Day of week of order (0 = Monday),0,7
+hour,numeric,Hour of day of order,0,24
+month,numeric,Month of order,0,12
+cust_prior_orders,numeric,Customer's earlier orders whose outcome was already known,0,15
+cust_prior_late_rate,numeric,Smoothed late share of those orders,0,72
+city_prior_orders,numeric,Earlier orders to the same city with known outcome,0,633
+city_prior_late_rate,numeric,Smoothed late share of those orders,0,3653
+citymode_prior_orders,numeric,"Same, for city x shipping mode",0,399
+citymode_prior_late_rate,numeric,Smoothed late share of those orders,0,2485
+late,binary target,Late_delivery_risk: 1 if real shipping days > scheduled days,0,2

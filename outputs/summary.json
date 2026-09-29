@@ -1,0 +1,68 @@
+{
+  "test_weeks": 30.571428571428573,
+  "test_orders_per_week": 427.5560747663551,
+  "best_model_by_cv": "Decision tree",
+  "same_day_cutoff_hour_learned_on_train": 12,
+  "cv_pr_auc_tiebroken_mean_sd": {
+    "Majority class": [
+      0.5734,
+      0.0033
+    ],
+    "Rule: First/Second Class": [
+      0.7903,
+      0.0035
+    ],
+    "Rule: + Same Day cut-off": [
+      0.8062,
+      0.0025
+    ],
+    "Lookup: late rate by mode": [
+      0.8548,
+      0.0018
+    ],
+    "Logistic regression": [
+      0.8368,
+      0.0024
+    ],
+    "Decision tree": [
+      0.8535,
+      0.0045
+    ],
+    "Random forest": [
+      0.8499,
+      0.0027
+    ],
+    "Gradient boosting": [
+      0.8535,
+      0.0028
+    ],
+    "SVM (RBF, Nystroem)": [
+      0.8402,
+      0.0045
+    ],
+    "Neural network (MLP)": [
+      0.8454,
+      0.0067
+    ]
+  },
+  "test_pr_auc_tiebroken": {
+    "Majority class": 0.5766,
+    "Rule: First/Second Class": 0.7942,
+    "Rule: + Same Day cut-off": 0.8131,
+    "Lookup: late rate by mode": 0.8593,
+    "Logistic regression": 0.8449,
+    "Decision tree": 0.8612,
+    "Random forest": 0.8579,
+    "Gradient boosting": 0.8602,
+    "SVM (RBF, Nystroem)": 0.8496,
+    "Neural network (MLP)": 0.8577
+  },
+  "test_saving_usd_per_week": {
+    "Decision tree": 2392.5,
+    "Lookup: late rate by mode": 2398.6,
+    "Rule: + Same Day cut-off": 1502.8,
+    "Rule: First/Second Class": 1380.5,
+    "Majority class (flag all)": 986.4
+  },
+  "runtime_s": 205.4
+}

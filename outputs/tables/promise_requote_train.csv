@@ -1,0 +1,5 @@
+shipping_mode,current_promise_days,orders_train,real_days_mean,real_days_min,real_days_max,late_share_if_promise_0d,late_share_if_promise_1d,late_share_if_promise_2d,late_share_if_promise_3d,late_share_if_promise_4d,late_share_if_promise_5d,late_share_if_promise_6d
+First Class,1,7628,2.0,2,2,1.0,1.0,0.0,0.0,0.0,0.0,0.0
+Same Day,0,2676,0.46860986547085204,0,1,0.46860986547085204,0.0,0.0,0.0,0.0,0.0,0.0
+Second Class,2,9670,3.9993795243019648,2,6,1.0,1.0,0.7983453981385729,0.6014477766287487,0.39927611168562566,0.20031023784901758,0.0
+Standard Class,4,29852,3.997856090044218,2,6,1.0,1.0,0.7988744472732145,0.5989213453034973,0.3993702264504891,0.20069007101701727,0.0

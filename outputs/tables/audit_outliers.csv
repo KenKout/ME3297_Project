@@ -1,0 +1,6 @@
+,column,min,median,max,iqr_outliers,pct_outliers
+0,Sales,9.989999771,199.9199982,1999.98999,488,0.27
+1,Order Item Quantity,1.0,1.0,5.0,0,0.0
+2,Order Item Discount Rate,0.0,0.100000001,0.25,0,0.0
+3,Order Item Product Price,9.989999771,59.99000168,1999.98999,2048,1.13
+4,Benefit per order,-4274.97998,31.52000046,911.7999878,18942,10.49

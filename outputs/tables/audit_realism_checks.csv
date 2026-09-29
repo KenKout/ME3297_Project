@@ -1,0 +1,5 @@
+,check,share_of_orders
+0,Standard/Second Class: real days == (Order Id - 1) mod 5 + 2,1.0
+1,First Class: real days == 2,1.0
+2,Same Day: late == (order hour >= 12),1.0
+3,Gap between consecutive orders is a multiple of 21 minutes,0.9746406766726023

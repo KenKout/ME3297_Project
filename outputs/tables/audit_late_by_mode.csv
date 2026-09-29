@@ -1,0 +1,5 @@
+Shipping Mode,n_lines,late_rate,scheduled_days
+First Class,26513,1.0,1
+Same Day,9293,0.47928548369740664,0
+Second Class,33806,0.7982902443353251,2
+Standard Class,103153,0.39769080879858076,4

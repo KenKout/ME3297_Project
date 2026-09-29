@@ -1,0 +1,8 @@
+# Môi trường Python
+.venv/
+__pycache__/
+*.pyc
+
+# Dữ liệu gốc: KHÔNG được đưa lên (điều khoản giấy phép / brief §7)
+data/
+*.zip

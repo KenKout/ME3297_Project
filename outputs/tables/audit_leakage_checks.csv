@@ -1,0 +1,3 @@
+,check,share_of_rows
+0,shipping date - order date == real shipping days,0.9742021615453221
+1,"label == (real days > scheduled days), non-cancelled lines",1.0
