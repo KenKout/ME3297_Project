@@ -1,0 +1,50 @@
+\section{Method}
+\label{sec:method}
+
+We compare six models from four families. Three of them (trees, SVM and neural networks) are
+taught in Weeks 6--13. The four baselines from \Cref{sec:problem} are not counted as model
+families. All models share the same features and the same preprocessing pipeline, built with
+scikit-learn\cite{pedregosa2011}.
+\Cref{app:parameters} gives the full settings.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Models compared and the reason each was chosen.}
+  \label{tab:models}
+  \small
+  \footnotesize
+  \begin{tabularx}{\linewidth}{l l X}
+    \toprule
+    \textbf{Model} & \textbf{Family} & \textbf{Why it is here} \\
+    \midrule
+    Logistic regression      & linear          & Transparent reference; if it matches the others, the signal is simple. \\
+    Decision tree (depth 6)  & trees (Wk 6)    & Rules a planner can check; depth from a sweep (\Cref{app:parameters}). \\
+    Random forest (300 trees) & trees, bagging & Interactions such as city $\times$ mode, lower variance\cite{breiman2001}. \\
+    Gradient boosting        & trees, boosting & Strongest tabular learner\cite{friedman2001}; finds any weak signal. \\
+    SVM, RBF kernel          & SVM (Wk 8)      & Margin-based bias; 600-component Nystr\"om map\cite{williams2001} + linear SVM, since exact RBF is $O(n^2)$. \\
+    MLP (64--32)             & ANN (Wk 7)      & Smooth non-linear effects; L2 penalty, early stopping. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{From scores to decisions}
+\label{subsec:policy}
+A score by itself is not a decision, so every method is turned into a flagging
+\emph{policy}:
+\begin{itemize}
+  \item \textbf{Probabilistic methods} (lookup table, logistic regression, trees, MLP) use the
+        expected-value rule\cite{elkan2001}: flag an order when the late-delivery cost it is
+        expected to avoid exceeds the action cost,
+        \begin{equation}
+          \hat p \cdot \underbrace{0.5}_{\text{avoided}} \cdot \underbrace{0.10\,v}_{\text{miss cost}} > \underbrace{\usd{10}}_{\text{action}}
+          \quad\Longleftrightarrow\quad \hat p \cdot v > \usd{200}.
+          \label{eq:ev}
+        \end{equation}
+        No threshold is tuned, but the rule needs calibrated probabilities, so we report the
+        Brier score.
+  \item \textbf{SVM} scores are not probabilities. Its threshold is the one that maximises
+        saving on out-of-fold training scores.
+  \item \textbf{Rules} flag exactly the orders they select. The majority baseline flags every
+        order.
+\end{itemize}
+The cost model then turns each policy into dollars per week (\Cref{tab:costs}).

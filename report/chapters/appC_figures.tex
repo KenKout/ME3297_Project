@@ -1,0 +1,62 @@
+\section{Additional results}
+\label{app:figures}
+
+\begin{table}[H]
+  \centering
+  \caption{Actual transit days by mode in the training period, and the late share that would result if $p$ days were promised. Current promises are shown in bold.}
+  \label{tab:requote}
+  \small
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{l r c c c c c c c c}
+    \toprule
+    & & \multicolumn{2}{c}{\textbf{Real days}} & \multicolumn{6}{c}{\textbf{Late share if promise = $p$ days}} \\
+    \cmidrule(lr){3-4}\cmidrule(lr){5-10}
+    \textbf{Mode} & \textbf{Orders} & mean & range & $p=0$ & 1 & 2 & 3 & 4 & 6 \\
+    \midrule
+    Same Day       & 2{,}676  & 0.47 & 0--1 & \textbf{0.47} & 0.00 & 0 & 0 & 0 & 0 \\
+    First Class    & 7{,}628  & 2.00 & 2--2 & 1.00 & \textbf{1.00} & 0.00 & 0 & 0 & 0 \\
+    Second Class   & 9{,}670  & 4.00 & 2--6 & 1.00 & 1.00 & \textbf{0.80} & 0.60 & 0.40 & 0.00 \\
+    Standard Class & 29{,}852 & 4.00 & 2--6 & 1.00 & 1.00 & 0.80 & 0.60 & \textbf{0.40} & 0.00 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\linewidth]{03_cv_pr_auc_boxplot}
+  \caption{PR-AUC (ties broken at random) across the 5 rolling-origin folds; triangles mark the mean.}
+  \label{fig:cvbox}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.62\linewidth]{04_test_pr_curves}
+  \caption{Precision--recall curves on the test period. Dashed lines are baselines; the AP values in the legend are computed with ties broken at random.}
+  \label{fig:pr}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{08_partial_dependence}
+  \caption{Partial dependence of the predicted late probability, decision tree, on a test sample of 3{,}000 orders.}
+  \label{fig:pdp}
+\end{figure}
+
+\begin{table}[H]
+  \centering
+  \caption{Drift check: the test period split at 2017-10-01. Saving is in USD per order under the expected-value policy.}
+  \label{tab:drift}
+  \footnotesize
+  \begin{tabular}{l l r r c c c}
+    \toprule
+    \textbf{Period} & \textbf{Method} & \textbf{Orders} & \textbf{Median} & \textbf{PR-AUC} & \textbf{ROC-AUC} & \textbf{Saving/order} \\
+    \midrule
+    2017-07..09 & Decision tree & 5{,}028 & \usd{610} & 0.860 & 0.778 & 9.77 \\
+                       & Lookup table  &         &           & 0.859 & 0.779 & 9.78 \\
+                       & Rule B        &         &           & 0.814 & 0.753 & 7.28 \\
+    2017-10..2018-01 & Decision tree & 8{,}043 & \usd{253} & 0.862 & 0.782 & 2.99 \\
+                       & Lookup table  &         &           & 0.859 & 0.776 & 3.00 \\
+                       & Rule B        &         &           & 0.813 & 0.749 & 1.16 \\
+    \bottomrule
+  \end{tabular}
+\end{table}

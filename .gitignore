@@ -6,3 +6,12 @@ __pycache__/
 # Dữ liệu gốc: KHÔNG được đưa lên (điều khoản giấy phép / brief §7)
 data/
 *.zip
+
+# LaTeX build artefacts (report/report.pdf is kept)
+report/*.aux
+report/*.log
+report/*.out
+report/*.toc
+report/*.bbl
+report/*.blg
+report/_minted-report/

@@ -1,0 +1,98 @@
+\section{Recommendation}
+\label{sec:recommendation}
+
+\subsection{Action 1: fix the promises (largest effect)}
+The cheapest intervention is to change the promise. \Cref{tab:scenarios} applies cumulative
+changes to the test-period orders, using the noon cut-off learned on the training period.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Promise scenarios on the test period (428 orders per week). Late cost is $0.10\times$ order value per late order.}
+  \label{tab:scenarios}
+  \footnotesize
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{l c c c c}
+    \toprule
+    \textbf{Scenario} & \textbf{Late share} & \textbf{Late/wk} & \textbf{Mean promise} & \textbf{Late cost/wk} \\
+    \midrule
+    Current (0/1/2/4 days)                          & 57.6\% & 246 & 2.93 d & \usd{10{,}520} \\
+    A: Same Day after 12:00 promised next day       & 54.5\% & 233 & 2.96 d & \usd{10{,}020} \\
+    B: A + First Class promised 2 days              & 39.4\% & 169 & 3.11 d & \usd{7{,}240} \\
+    C: B + Second Class promised 4 days             & 31.5\% & 135 & 3.50 d & \usd{5{,}770} \\
+    D: C + Second/Standard promised 6 days          & 0.0\%  & 0   & 5.09 d & \usd{0} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Recommended: scenario B, now.} First Class already takes exactly 2 days, so the new
+promise costs no speed, and a checkout cut-off for Same Day is standard practice. B removes 77
+late orders and about \usd{3{,}300} of late cost per week. Scenario C is a commercial decision:
+Second Class is no faster than Standard, so DataCo should fix it or stop selling it as faster.
+We do not recommend D, whose lost conversions the data cannot measure.
+
+\subsection{Action 2: flag orders at release with the lookup table}
+Some late orders remain after the promise change, so the planner still needs a daily list.
+\Cref{fig:saving} plots weekly net saving against the share of orders flagged, with orders
+ranked by $\hat p\times v$. The saving peaks at about a 45\% alert rate for both the lookup
+table and the decision tree (\usd{2{,}400} per week). Beyond that point, each extra check costs
+more than the late delivery it prevents. Rule B peaks earlier, at 25\% (\usd{1{,}810} per week),
+because it cannot tell a Second Class order (80\% late) from a First Class one (100\% late).
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.66\linewidth]{05_saving_vs_alert_rate}
+  \caption{Weekly net saving compared with taking no action, by alert rate, on the test period. The dotted line marks Rule A's alert rate.}
+  \label{fig:saving}
+\end{figure}
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Weekly operational effect of each policy on the test period (428 orders per week).}
+  \label{tab:rec}
+  \footnotesize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{l c c c c c}
+    \toprule
+    \textbf{Policy} & \textbf{Flagged} & \textbf{Late caught} & \textbf{Late missed} & \textbf{False alarms} & \textbf{Net saving} \\
+    \midrule
+    Lookup table, EV rule & 187 & 129 & 117 & 57  & \usd{2{,}399} \\
+    Decision tree, EV rule & 188 & 129 & 117 & 59  & \usd{2{,}393} \\
+    Rule B (+ Same Day cut-off)        & 162 & 146 & 101 & 16  & \usd{1{,}503} \\
+    Rule A (First/Second)              & 149 & 133 & 113 & 16  & \usd{1{,}381} \\
+    Flag every order                   & 428 & 246 & 0   & 181 & \usd{986} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Recommended policy:} each morning, flag the orders for which
+$P(\text{late})\times\text{order value} > \usd{200}$, where $P(\text{late})$ comes from the
+five-row lookup table below. The expected workload is about \textbf{190 orders per week},
+roughly 27 per day. That is about 16 hours of customer-service time per week, assuming 5
+minutes per order. It catches 129 late orders per week and saves about \usd{900} per week more
+than Rule B.
+
+\begin{center}
+  \small
+  \begin{tabular}{l c c}
+    \toprule
+    \textbf{Cell (from training data)} & \textbf{$P(\text{late})$} & \textbf{Flag if order value exceeds} \\
+    \midrule
+    First Class; Same Day after 12:00 & 1.00 & \usd{200} \\
+    Second Class                      & 0.80 & \usd{250} \\
+    Standard Class                    & 0.40 & \usd{500} \\
+    Same Day before 12:00             & 0.00 & never \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\textbf{Why the lookup table and not the model.} The tree and gradient boosting give the same
+answer at extra cost: retraining, monitoring, and logic planners cannot check by eye. Across all
+36 cost settings (action \usd{2}--\usd{20}, miss 5--20\% of value, 30--70\% avoided), the best model
+and the table differ by $-\usd{24}$ to $+\usd{5}$ per week, while the table beats Rule B by
+\usd{300}--\usd{5{,}500} per week. At a \usd{2} action cost the optimal alert rate rises to 60--90\%.
+
+\paragraph{Size of the effect.} Under the stated assumptions, scenario B avoids about
+\textbf{\usd{3{,}300} per week} of late-delivery cost, and the flagging policy saves a further
+\textbf{\usd{900} per week} over the current-practice proxy: roughly \usd{200}k per year at 2017
+volumes. Because the saving scales with order value, which fell by two-thirds in late 2017, we
+would quote it as ``tens to low hundreds of thousands of dollars per year''.

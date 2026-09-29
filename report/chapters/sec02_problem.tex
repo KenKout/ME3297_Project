@@ -1,0 +1,69 @@
+\section{Problem and decision}
+\label{sec:problem}
+
+\subsection{Supply-chain situation}
+DataCo Global sells clothing, sporting goods and electronics online to 164 countries. At
+checkout the customer chooses a shipping mode, and each mode carries a fixed promise: Same Day
+(0 days), First Class (1), Second Class (2) or Standard Class (4). In the data, 57\% of the
+orders that were not cancelled arrived late. Each late order costs goodwill credits, repeat
+contacts and, eventually, customers.
+
+\subsection{Decision, decision-maker and moment}
+\begin{itemize}
+  \item \textbf{Decision.} Should this order be treated as high-risk before it leaves the
+        warehouse? If so, it gets priority handling or a mode upgrade, or customer service
+        contacts the buyer in advance with a realistic date.
+  \item \textbf{Decision-maker.} The fulfilment planner, with customer service acting on the
+        flagged list.
+  \item \textbf{Moment.} Order release: the order has been placed and paid, but not yet
+        dispatched. At that moment the planner knows the order contents, prices and discounts,
+        the customer and destination, the chosen mode and its promise, and the time of day. The
+        planner does \emph{not} know the actual transit time or the final order status.
+\end{itemize}
+
+\subsection{Target and what is known at the moment of decision}
+The target is \tcode{Late\_delivery\_risk} (1 = late). We verified that for every order that was
+not cancelled it equals \tcode{Days for shipping (real)} $>$ \tcode{Days for shipment
+(scheduled)}. Actual transit takes 0--6 days, and we assume the outcome is recorded one day after delivery,
+so the label becomes known 1--7 days after the order. \Cref{sec:prep} lists the
+columns we excluded because they are only known after the outcome.
+
+\subsection{Baselines the models must beat}
+The dataset does not describe DataCo's current practice, so we built baselines of increasing
+strength:
+\begin{enumerate}
+  \item \textbf{Majority class}: treat every order as late (57\% of orders are late).
+  \item \textbf{Rule A}, our proxy for current practice: flag every First and Second Class
+        order, because these modes carry the tightest promises.
+  \item \textbf{Rule B}: Rule A, plus Same Day orders placed at or after a cut-off hour learned
+        from the training data.
+  \item \textbf{Lookup table}: the historical late share for each mode, with Same Day split at
+        the cut-off hour. This uses the same information as Rule B but outputs a probability.
+\end{enumerate}
+A model only adds value if it beats the lookup table.
+
+\subsection{Cost of each kind of error}
+\label{subsec:costs}
+We assume the following costs (\Cref{tab:costs}). The dataset contains none of them, so
+\Cref{sec:recommendation} tests 36 alternative combinations.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Cost assumptions per order (USD). $v$ is the order value; the median is about \usd{560} in the training period.}
+  \label{tab:costs}
+  \small
+  \begin{tabularx}{\linewidth}{l c X}
+    \toprule
+    \textbf{Outcome} & \textbf{Cost} & \textbf{Reasoning} \\
+    \midrule
+    False alarm (flagged, on time)  & \usd{10}                    & priority handling, an upgrade or a call that was not needed \\
+    Missed late order               & $0.10\,v$ ($\approx\usd{56}$) & goodwill credit, repeat contacts, churn risk \\
+    Caught late order               & $\usd{10} + 0.05\,v$         & action cost; half of the late-delivery cost is avoided \\
+    Correctly not flagged           & 0                           & -- \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+At the median order value, a missed late order costs about five times as much as a false
+alarm. For cheap orders the ratio falls below one, which drives the policy in
+\Cref{sec:recommendation}.

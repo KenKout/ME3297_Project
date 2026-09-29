@@ -1,0 +1,61 @@
+\section{Data preparation}
+\label{sec:prep}
+
+\Cref{tab:prep} lists every preparation decision. All of them are implemented in
+\tcode{src/data\_prep.py} and in the scikit-learn pipeline.
+
+\begin{table}[!htbp]
+  \centering
+  \caption{Preparation decisions, their justification, and what each one risks.}
+  \label{tab:prep}
+  \footnotesize
+  \begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{3.6cm} X}
+    \toprule
+    \textbf{Decision} & \textbf{Why, and what it risks} \\
+    \midrule
+    Drop 7{,}754 cancelled or suspected-fraud lines &
+      These orders are never delivered, so there is no delivery decision for them. We assume
+      the cancellation or fraud check happens before dispatch. \\
+    Aggregate lines to orders &
+      The decision is per order. Keeping lines would count multi-line orders several times and
+      let lines of one order fall on both sides of a CV split. \\
+    Order-level features &
+      Lines, quantity, value, discount, maximum unit price, number of categories, profit,
+      margin, and the department and category of the highest-value line. \\
+    Calendar features &
+      Weekday, hour and month of the order. The raw timestamp and \tcode{Order Id} are
+      \emph{not} used, because they encode the order sequence, and the sequence determines the
+      outcome here (\Cref{tab:realism}). \\
+    History features &
+      Prior order count and smoothed prior late rate, $(\text{late}+2.5)/(n+5)$, per customer,
+      city, and city $\times$ mode. A past order counts only once its outcome was known. \\
+    Drop PII and empty columns &
+      Email, password, names, street and zip codes; \tcode{Product Description},
+      \tcode{Order Zipcode} and \tcode{Product Image}. \\
+    Keep outliers &
+      They are genuine prices and losses, and trees are insensitive to them. \\
+    Encoding and scaling &
+      One-hot encoding for 6 low-cardinality categoricals (levels with fewer than 20 orders are
+      pooled). Target encoding\cite{micci2001}, cross-fitted over 5 folds, for country (164),
+      city (3{,}585) and category (50). Median imputation. Standard scaling for non-tree
+      models only. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\paragraph{Leakage risks specific to this dataset and how each is avoided.}
+\begin{enumerate}
+  \item \textbf{\tcode{shipping date (DateOrders)}} looks like a dispatch date. In fact it equals the
+        order date plus the \emph{real} transit days in 97.4\% of rows, so it encodes the outcome.
+        It is excluded, together with \tcode{Days for shipping (real)}, \tcode{Delivery Status}
+        and \tcode{Order Status}.
+  \item \textbf{Order sequence.} Transit days follow \tcode{Order Id} modulo 5, so a model given
+        the order ID or the raw timestamp could learn how the data was generated. Neither is a
+        feature, and \tcode{run\_all.py} stops if one is ever added.
+  \item \textbf{History features.} A naive ``past late rate'' would include orders that had not
+        yet been delivered. We count a past order only after its order date + real transit
+        days + 1 day.
+  \item \textbf{Preprocessing.} Imputers, scalers and encoders sit inside the \tcode{Pipeline} and
+        are refit on the training part of every fold. Target encoding is also cross-fitted
+        within the training data.
+\end{enumerate}

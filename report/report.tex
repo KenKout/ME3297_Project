@@ -1,0 +1,94 @@
+% ME3297 - Team project final report, built on the HCMUT report template
+% Build: pdflatex -shell-escape report.tex ; bibtex report ; pdflatex -shell-escape report.tex (x2)
+% Figures are read directly from ../outputs/figures/ (produced by ../run_all.py).
+\documentclass[twoside,final]{hcmut-report}
+\usepackage{codespace}
+
+% Encodings
+\usepackage{gensymb,textcomp}
+
+% Better tables
+\usepackage{array,longtable,multicol,multirow,siunitx,tabularx}
+
+% Better enum
+\usepackage{enumitem}
+
+% Graphics
+\usepackage{caption,float,subcaption}
+
+% Add options for figures, like max width, framing, etc.
+\usepackage[export]{adjustbox}
+
+% References
+% Use \Cref{} instead of \ref{}
+\usepackage[nameinlink]{cleveref}
+
+% Wider text block and tighter header/footer than the template defaults
+\geometry{
+  left=2cm, right=2cm, top=1.2cm, bottom=1.2cm,
+  includeheadfoot=true,
+  headheight=35pt, headsep=6pt, footskip=18pt
+}
+
+% Figures produced by the analysis code
+\graphicspath{{../outputs/figures/}{graphics/}}
+
+% Configurations
+\deptname{School of Industrial Management}
+\coursename{\parbox{0.88\linewidth}{\centering ME3297 -- Applications of Artificial Intelligence in Supply Chain Management}}
+\reporttype{Major Assignment -- Final Report\\[2pt]\normalsize Section L\_\_ \quad Team \_\_}
+\title{Flagging Orders at Risk of Late Delivery\\[4pt]\large DataCo Smart Supply Chain -- a decision at order release}
+\advisor{& Ngô Đình Phương &}
+\stuname{%
+  & Lương Trương Quang Huy & 2352385 \\
+  & Lê Tuấn Tài            & 2312997 \\
+  & Nguyễn Quốc Đăng Khoa  & 2311625 \\
+  & Nguyễn Lê Chí Kiên     & 2352643 \\
+  & Phạm Hải Nam           & 2352783 \\
+  & Lê Thanh Duy           & 2352178 \\
+}
+
+% Set depth of numbering for counters
+\AtBeginDocument{\counterwithin{lstlisting}{section}}
+
+\setcounter{tocdepth}{1}
+
+% Compact lists
+\setlist{itemsep=1pt,topsep=3pt}
+
+% Custom commands
+\newcommand{\tcode}[1]{\texttt{#1}}
+\newcommand{\usd}[1]{\$#1}
+
+\begin{document}
+\coverpage%
+
+\tableofcontents
+
+\clearpage
+\input{chapters/sec01_summary}
+\input{chapters/sec02_problem}
+\input{chapters/sec03_data}
+\input{chapters/sec04_preparation}
+\input{chapters/sec05_method}
+\input{chapters/sec06_validation}
+\input{chapters/sec07_results}
+\input{chapters/sec08_interpretation}
+\input{chapters/sec09_recommendation}
+\input{chapters/sec10_limitations}
+\input{chapters/sec11_contribution}
+
+\renewcommand{\bibfont}{\footnotesize}
+\setlength{\bibsep}{0pt plus 1pt}
+\bibliographystyle{plainnat}
+\bibliography{refs/refs}
+
+\clearpage
+\appendix
+\input{chapters/appA_dictionary}
+\input{chapters/appB_parameters}
+\input{chapters/appC_figures}
+\input{chapters/appD_reproducibility}
+\input{chapters/appE_ai}
+
+\end{document}

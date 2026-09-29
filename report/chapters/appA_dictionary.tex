@@ -1,0 +1,49 @@
+\section{Data dictionary}
+\label{app:dictionary}
+
+All 28 features used, plus the target, at order level (62{,}897 orders). No feature has missing
+values after preparation. The raw source columns are described in the column description file shipped with the dataset.
+
+\begin{footnotesize}
+\begin{longtable}{>{\raggedright\arraybackslash}p{4.6cm} >{\raggedright\arraybackslash}p{2.6cm} >{\raggedright\arraybackslash}p{5.2cm} r}
+  \caption{Data dictionary of the order-level table.}\label{tab:dictionary}\\
+  \toprule
+  \textbf{Feature} & \textbf{Type} & \textbf{Description} & \textbf{Unique} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{Feature} & \textbf{Type} & \textbf{Description} & \textbf{Unique} \\
+  \midrule
+  \endhead
+    \tcode{shipping\_mode} & categorical & Shipping mode chosen at order (Standard/Second/First/Same Day) & 4 \\
+    \tcode{market} & categorical & Destination market (5 values) & 5 \\
+    \tcode{order\_region} & categorical & Destination region (23 values) & 23 \\
+    \tcode{customer\_segment} & categorical & Consumer / Corporate / Home Office & 3 \\
+    \tcode{payment\_type} & categorical & Transaction type: DEBIT{,} TRANSFER{,} PAYMENT{,} CASH & 4 \\
+    \tcode{main\_department} & categorical & Department of the order's highest-value line & 11 \\
+    \tcode{order\_country} & categorical{,} target-encoded & Destination country & 164 \\
+    \tcode{order\_city} & categorical{,} target-encoded & Destination city & 3{,}585 \\
+    \tcode{main\_category} & categorical{,} target-encoded & Product category of the highest-value line & 50 \\
+    \tcode{scheduled\_days} & numeric & Promised shipping days (fixed by mode: 0/1/2/4) & 4 \\
+    \tcode{n\_lines} & numeric & Number of order lines & 5 \\
+    \tcode{total\_qty} & numeric & Total units ordered & 24 \\
+    \tcode{order\_value} & numeric{,} USD & Sum of line Sales (before discount) & 18{,}647 \\
+    \tcode{total\_discount} & numeric{,} USD & Sum of line discounts & 20{,}182 \\
+    \tcode{mean\_discount\_rate} & numeric & Mean line discount rate & 4{,}513 \\
+    \tcode{max\_unit\_price} & numeric{,} USD & Highest unit price in the order & 75 \\
+    \tcode{n\_categories} & numeric & Distinct product categories in the order & 5 \\
+    \tcode{order\_profit} & numeric{,} USD & Sum of 'Benefit per order' over lines & 52{,}398 \\
+    \tcode{profit\_margin} & numeric & order\_profit / order\_value & 58{,}088 \\
+    \tcode{weekday} & numeric & Day of week of order (0 = Monday) & 7 \\
+    \tcode{hour} & numeric & Hour of day of order & 24 \\
+    \tcode{month} & numeric & Month of order & 12 \\
+    \tcode{cust\_prior\_orders} & numeric & Customer's earlier orders whose outcome was already known & 15 \\
+    \tcode{cust\_prior\_late\_rate} & numeric & Smoothed late share of those orders & 72 \\
+    \tcode{city\_prior\_orders} & numeric & Earlier orders to the same city with known outcome & 633 \\
+    \tcode{city\_prior\_late\_rate} & numeric & Smoothed late share of those orders & 3{,}653 \\
+    \tcode{citymode\_prior\_orders} & numeric & Same{,} for city x shipping mode & 399 \\
+    \tcode{citymode\_prior\_late\_rate} & numeric & Smoothed late share of those orders & 2{,}485 \\
+    \tcode{late} & binary target & Late\_delivery\_risk: 1 if real shipping days > scheduled days & 2 \\
+  \bottomrule
+\end{longtable}
+\end{footnotesize}

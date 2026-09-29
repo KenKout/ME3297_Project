@@ -1,0 +1,50 @@
+\section{Interpretation}
+\label{sec:interpretation}
+
+\paragraph{What drives the model.} We measured permutation importance on the test set as the
+drop in PR-AUC when one feature is shuffled (\Cref{fig:perm}). For the decision tree, three
+features carry almost everything: shipping mode (0.164), scheduled days (0.087, which is the
+same information as mode) and order hour (0.053). Every other feature scores below 0.001. For
+gradient boosting the picture is the same: mode 0.283, hour 0.035, and nothing else above 0.002.
+Destination, customer history, order value, discount and product category do not matter.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.5\linewidth]{06_permutation_importance}
+  \caption{Permutation importance for the decision tree: mean drop in test PR-AUC over 5 shuffles, with error bars showing one standard deviation.}
+  \label{fig:perm}
+\end{figure}
+
+\paragraph{Tree structure.} The depth-3 tree in \Cref{fig:tree} reads as a policy manual. The
+first split separates Standard Class (40\% late) from the rest. On the left, the tree
+isolates Same Day (\tcode{scheduled\_days} $\le 0.5$) and splits it at \tcode{hour} $\le 11.5$
+into leaves that are 0\% and 100\% late. First Class becomes a 100\%-late leaf, and Second Class
+a leaf that is 80\% late. On the right, the splits on target-encoded city and city $\times$ mode
+history move the late share only between 39\% and 43\%. That is noise, and these leaves
+disappear from the importance ranking.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.85\linewidth]{07_decision_tree_depth3}
+  \caption{Decision tree limited to depth 3, fitted on the training period. \tcode{value} gives the shares [on time, late]; \tcode{samples} is the share of training orders reaching each node.}
+  \label{fig:tree}
+\end{figure}
+
+\paragraph{Does this make supply-chain sense?} Mostly, yes, and it points at the promise rather
+than the order.
+\begin{itemize}
+  \item \textbf{First Class} is promised 1 day and always takes 2: a service-level design error,
+        not a risk to predict.
+  \item \textbf{Second Class and Standard} both take 2--6 days uniformly, mean 4.0
+        (\Cref{tab:requote}). Second Class is \emph{not faster}, only promised as faster, and
+        its buyers are late 80\% of the time.
+  \item \textbf{Same Day} behaves like a warehouse with a 12:00 cut-off, which real fulfilment
+        centres use; the fix is to show the cut-off at checkout.
+  \item The \textbf{absence} of destination, customer or product effects is not plausible for
+        real logistics. It is consistent with the realism checks (\Cref{subsec:realism}), so we
+        read it as a property of the data.
+\end{itemize}
+The partial-dependence plots in \Cref{app:figures} confirm this. The average predicted late
+probability jumps by about 6 points at 12:00. For order value, discount and city $\times$ mode
+history it moves by at most 2 points, and a feature whose permutation importance is
+essentially zero cannot turn that movement into better rankings.

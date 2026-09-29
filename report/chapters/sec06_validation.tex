@@ -1,0 +1,28 @@
+\section{Validation design}
+\label{sec:validation}
+
+\paragraph{Split.} The data is split \textbf{by time and never shuffled}. Orders placed before
+2017-07-01 form the training set (49{,}826 orders, 57.2\% late). Orders from 2017-07-01 to
+2018-01-31 form the test set (13{,}071 orders, 57.6\% late, 30.6 weeks). Nothing chosen during
+development used the test set. That includes model settings, the SVM threshold, the Same Day
+cut-off hour and the choice of best model. The test set was scored once, at the end.
+
+\paragraph{Cross-validation.} We use rolling-origin validation\cite{bergmeir2012} with
+\tcode{TimeSeriesSplit(5)} on the training period. Each fold trains on all earlier orders and
+validates on the next block of about 8{,}300 orders. Every table reports the mean and standard
+deviation across the 5 folds. On the test set, 95\% intervals come from 200 bootstrap resamples,
+and all methods share the same resamples.
+
+\paragraph{Metrics and why.}
+\begin{itemize}
+  \item \textbf{PR-AUC (average precision)}, the headline metric: how pure the flagged list is at
+        every alert rate\cite{saito2015}. scikit-learn scores a block of tied scores at its pooled
+        precision, which penalises few-valued methods (lookup table: 0.805 instead of 0.859 on
+        test), so we break ties at random (mean of 5 draws). Continuous scores are unaffected.
+  \item \textbf{ROC-AUC}, also computed within each shipping mode, to isolate any signal beyond
+        what the rules capture. \textbf{Recall and precision at a 35\% alert rate}, roughly the
+        capacity implied by Rule A.
+  \item \textbf{Net saving per order and per week} under \Cref{tab:costs}, the metric tied to the
+        decision. The \textbf{Brier score} checks calibration for the expected-value policy.
+\end{itemize}
+Accuracy is reported only alongside these metrics.

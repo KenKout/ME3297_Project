@@ -1,0 +1,28 @@
+\section{Reproducibility and code excerpts}
+\label{app:code}
+
+The code runs from a clean start and reproduces every number in this report. We checked this
+by rebuilding it in a fresh virtual environment and comparing all 24 output tables. Repository:
+\url{https://github.com/KenKout/ME3297_Project}. The raw dataset is not included in the
+submission; \tcode{get\_data.py} extracts it from the Mendeley archive.
+
+\begin{code}{bash}
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt        # numpy 2.5.3, pandas 3.0.6, scikit-learn 1.9.1, matplotlib 3.11.2
+python get_data.py path/to/8gx2fvg2k6-5.zip
+python run_all.py                      # ~4 min; writes outputs/tables/*.csv and outputs/figures/*.png
+\end{code}
+
+\paragraph{Leakage-safe history features} (\tcode{\_prior\_history} in \tcode{src/data\_prep.py},
+body only; comments in the code are in Vietnamese). For each order, it counts the earlier orders
+of the same group whose outcome was already available (\tcode{avail} = order date + real
+transit days + 1 day) at the current order time, and how many of those were late.
+
+\inputcode[firstline=199,lastline=215]{python}{../src/data_prep.py}
+
+The expected-value flagging rule (\Cref{eq:ev}) is a single line in \tcode{ev\_flag} in
+\tcode{src/modeling.py}:
+
+\begin{code}{python}
+return np.asarray(p) * cost.effectiveness * cost.miss_fraction * np.asarray(value) > cost.action_cost
+\end{code}

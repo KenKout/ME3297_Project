@@ -1,0 +1,27 @@
+\section{Executive summary}
+\label{sec:summary}
+
+\textbf{Recommendation.} DataCo's late deliveries are mostly a promise-setting problem, not an
+order-selection problem. We recommend three actions.
+\begin{enumerate}
+  \item \textbf{Change two promises first.} First Class is promised in 1 day but every First Class
+        order takes exactly 2 days, so all of them are late. Same Day orders placed after 12:00
+        always arrive the next day. Promising 2 days for First Class, and next-day delivery for
+        afternoon Same Day orders, cuts late orders from \textbf{246 to 169 per week ($-31\%$)}.
+        The average promise lengthens by only 0.18 days.
+  \item \textbf{At order release, flag orders with a five-row lookup table, not a
+        machine-learning model.} Flag an order when $P(\text{late})\times\text{order value} >
+        \usd{200}$. This flags about 187 of 428 orders per week, catches 129 late ones and
+        saves about \textbf{\usd{2{,}400} per week}, against \usd{1{,}500} for the best fixed rule.
+  \item \textbf{Re-check on real delivery records before deploying.} The delivery timings in this
+        dataset follow deterministic, apparently generated patterns.
+\end{enumerate}
+
+\textbf{Evidence.} We trained four baselines and six models (decision tree, random forest,
+gradient boosting, SVM, MLP and logistic regression) on 49{,}826 orders from 2015--2017-06,
+and tested them once on 13{,}071 later orders. The best models, the decision tree (PR-AUC
+$0.854 \pm 0.005$ over 5 rolling-origin folds) and gradient boosting ($0.853 \pm 0.003$), tie
+with the lookup table ($0.855 \pm 0.002$). Within Second and Standard Class the models rank
+orders at chance level (ROC-AUC 0.47--0.52), and across 36 cost scenarios the best model and
+the table stay within \usd{25} per week of each other. Shipping mode and order hour carry the
+entire signal.

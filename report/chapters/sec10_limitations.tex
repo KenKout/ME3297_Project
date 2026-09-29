@@ -1,0 +1,31 @@
+\section{Limitations}
+\label{sec:limitations}
+
+\paragraph{What the model cannot do.} It cannot say \emph{which} Standard or Second Class orders
+(79\% of volume) will be late; within those modes it is no better than a coin. It does not
+predict the \emph{size} of a delay.
+
+\paragraph{Where the data is unrepresentative.}
+\begin{itemize}
+  \item \textbf{Synthetic outcome.} Transit days follow the order ID modulo 5 (\Cref{tab:realism}).
+        ``Only mode and hour matter'' may describe the data generator, not DataCo's network; on
+        real data, destination, carrier and warehouse load would very likely carry signal. The
+        pipeline is ready for such data, but the ``use the lookup table'' conclusion may not
+        transfer.
+  \item \textbf{Drift after 2017-Q4.} Ranking quality held, but the saving per order fell from
+        \usd{9.8} to \usd{3.0}.
+  \item \textbf{Costs are assumed.} The \emph{choice} of policy is robust across the sensitivity
+        grid; the size of the saving is not.
+  \item \textbf{Promise changes affect demand.} Longer promises may reduce conversion, which the
+        data cannot measure. Scenario B only aligns promises with what already happens;
+        C and D need a controlled test.
+\end{itemize}
+
+\paragraph{What must be true for the recommendation to hold.} Real transit times depend mainly
+on mode and cut-off; customers accept a 2-day First Class promise; a flagged order avoids about
+half of the late-delivery cost.
+
+\paragraph{With more time or data.} We would refit the pipeline on carrier and warehouse records
+(dispatch times, carrier, distance), A/B-test the promise change in one market, estimate the
+effect of an action from past interventions instead of assuming 50\%, and add a regression
+model for the size of the delay.

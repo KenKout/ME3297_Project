@@ -1,0 +1,40 @@
+\section{Model settings and tuning}
+\label{app:parameters}
+
+\begin{table}[H]
+  \centering
+  \caption{Full parameter settings (scikit-learn 1.9.1, \tcode{random\_state=42}). Unlisted parameters are library defaults.}
+  \label{tab:params}
+  \footnotesize
+  \begin{tabularx}{\linewidth}{l X}
+    \toprule
+    \textbf{Model} & \textbf{Settings} \\
+    \midrule
+    Majority class      & \tcode{DummyClassifier(strategy="prior")} \\
+    Rule A / Rule B     & Custom estimator. Rule B learns its cut-off in \tcode{fit()} as the first hour whose Same Day late share exceeds 50\% (12:00 on the training set). \\
+    Lookup table        & Custom estimator: mean late share per cell (4 modes, with Same Day split at the learned cut-off). \\
+    Logistic regression & \tcode{C=1.0, max\_iter=2000}; scaled inputs \\
+    Decision tree       & \tcode{max\_depth=6, min\_samples\_leaf=50}; unscaled inputs \\
+    Random forest       & \tcode{n\_estimators=300, min\_samples\_leaf=20, max\_features="sqrt"} \\
+    Gradient boosting   & \tcode{HistGradientBoostingClassifier(learning\_rate=0.05, max\_iter=300, max\_leaf\_nodes=31, early\_stopping=True)} \\
+    SVM                 & \tcode{Nystroem(kernel="rbf", gamma=0.02, n\_components=600)} $\rightarrow$ \tcode{LinearSVC(C=0.1)}; scaled inputs \\
+    MLP                 & \tcode{hidden\_layer\_sizes=(64, 32), alpha=1e-3, learning\_rate\_init=1e-3, max\_iter=200, early\_stopping=True}; scaled inputs \\
+    Preprocessing       & \tcode{OneHotEncoder(min\_frequency=20,} \tcode{handle\_unknown="infrequent\_if\_exist")}; \tcode{TargetEncoder(target\_type="binary", cv=KFold(5, shuffle=True))}; \tcode{SimpleImputer(median)}; \tcode{StandardScaler} (non-tree models only) \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\begin{table}[H]
+  \centering
+  \caption{Decision-tree depth sweep (rolling-origin CV, 5 folds, standard average precision). Most of the gain with depth comes from deeper trees splitting tied leaves into many small ones, which standard AP rewards (\Cref{sec:validation}); with ties broken, depth 6 already scores 0.854. We kept depth 6 for readability.}
+  \label{tab:depth}
+  \small
+  \begin{tabular}{l c c c c c c c}
+    \toprule
+    \tcode{max\_depth} & 2 & 3 & 4 & 6 & 8 & 12 & none \\
+    \midrule
+    PR-AUC mean & 0.760 & 0.808 & 0.818 & 0.832 & 0.839 & 0.846 & 0.847 \\
+    PR-AUC SD   & 0.008 & 0.005 & 0.010 & 0.009 & 0.006 & 0.003 & 0.002 \\
+    \bottomrule
+  \end{tabular}
+\end{table}

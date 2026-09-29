@@ -47,3 +47,14 @@ Constante, F., Silva, F., & Pereira, A. (2019). *DataCo SMART SUPPLY CHAIN FOR B
 - **Excluded as post-outcome:** `Days for shipping (real)`, `Delivery Status`, `Order Status` and `shipping date` (which equals order date + real days in 97% of rows). Cancelled and suspected-fraud orders (7,754 lines) are removed, because they are never delivered.
 - **Split:** by time. Training covers orders before 2017-07-01; the test set covers 2017-07-01 to 2018-01-31. Validation uses `TimeSeriesSplit(5)` on the training period.
 - **Preprocessing:** all of it sits inside a scikit-learn `Pipeline`/`ColumnTransformer`, so it is refit in every fold.
+
+## Report
+
+The LaTeX source is in `report/` (HCMUT template). Figures are read straight from `outputs/figures/`, so run `run_all.py` first. Build with:
+
+```bash
+cd report
+pdflatex -shell-escape report.tex && bibtex report && pdflatex -shell-escape report.tex && pdflatex -shell-escape report.tex
+```
+
+`-shell-escape` is needed for `minted`, which requires Pygments (`pip install pygments`).
